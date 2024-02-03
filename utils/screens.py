@@ -15,7 +15,6 @@ def game_over_screen():
     fade.set_alpha(200)
     fade.fill((0, 0, 0))
     DISPLAY.blit(fade, (0, 0))
-
     pygame.display.update()
 
     while True:
@@ -52,6 +51,7 @@ def game_over_screen():
         quit_button = Button(DISPLAY, (Size.Width/2, 490), "Quit", (350, 50), (82, 77, 77), "white", (36, 35, 35))
 
         if play_again_button.get_click():
+            Game.reset()
             play()
         if back_to_title_screen.get_click():
             title_screen()
@@ -96,6 +96,26 @@ def title_screen():
         if quit_button.get_click():
             pygame.quit()
             sys.exit()
+
+        pygame.display.update()
+
+        clock.tick(60)
+
+
+def options_screen():
+    pygame.display.update()
+
+    while True:
+        Game.frame_delta_time = (time.time() - Game.last_td) * 360
+        Game.last_td = time.time()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.VIDEORESIZE:
+                Size.Width = event.w
+                Size.Height = event.h
 
         pygame.display.update()
 

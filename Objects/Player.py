@@ -12,24 +12,26 @@ class Player:
         self.boosted = False
         self.playerSprite = pygame.image.load("assets/images/rocket.png").convert_alpha()
         self.playerSprite = pygame.transform.scale(self.playerSprite, (67, 67))
+        self.hitbox_width = self.playerSprite.get_width() / 2.1
+        self.hitbox_height = self.playerSprite.get_width() / 3
+
         self.position = pygame.Vector2()
         self.position.xy = 200 - round(self.playerSprite.get_width() / 2), 650 - round(self.playerSprite.get_height() / 2)
-        self.health = 10
+        self.health = 3
         self.bullets = 10
 
         self.rect = self.playerSprite.get_rect()
         self.hitbox = self.rect.inflate(-35, -25)
         self.hitbox.center = (
-            (self.position.x + self.playerSprite.get_width() / 2.1),
-            (self.position.y + self.playerSprite.get_height() / 3))
-
+            (self.position.x + self.hitbox_width),
+            (self.position.y + self.hitbox_width))
+        print(self.hitbox.size)
     def move(self):
         if self.position.x > Size.Width:
             self.position.x = Size.Width-self.hitbox.size[0]*1.5
 
-        self.hitbox.center = (self.position.x + self.playerSprite.get_width() / 2.1), (
-                    self.position.y + self.playerSprite.get_height() / 3)
-
+        self.hitbox.center = (self.position.x + self.hitbox_width), (
+                     self.position.y + self.hitbox_width)
         DISPLAY.blit(self.playerSprite, self.position)
 
     def change_skin(self):
@@ -42,7 +44,7 @@ class Player:
 
     def shoot(self):
         self.bullets -= 1
-        return Bullet(self.position.x + self.playerSprite.get_width() / 3, self.position.y, 1)
+        return Bullet(self.position.x + self.hitbox_width, self.position.y, 1)
 
     def check_boarder_collision(self):
         width, height = self.hitbox.size
@@ -63,10 +65,9 @@ class Player:
     def rock_collision(self, rock: Rock):
         rock = rock
 
-        rockRect = rock.rockSprite.get_rect()
-        rockHitbox = rockRect.inflate(-24, -11)
+        rockHitbox = rock.hitbox
         rockHitbox.center = (
-            (rock.position.x + rock.rockSprite.get_width() / 2), (rock.position.y + rock.rockSprite.get_height() / 1.5))
+            (rock.position.x + rock.hitbox_width), (rock.position.y + rock.hitbox_height))
 
         collide = self.hitbox.colliderect(rockHitbox)
 

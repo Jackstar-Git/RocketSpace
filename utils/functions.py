@@ -1,4 +1,32 @@
 import pygame
+import math
+
+
+def collide_circles(point1: tuple[float, float], point2: tuple[float, float], radius1: float, radius2: float):
+    distance = math.sqrt(abs(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2)))
+
+    return distance < radius1+radius2
+
+
+def collide_circle_rect(circle: tuple[float, float], circle_radius: float, rect_pos: tuple[float, float], rect_size: tuple[float, float]):
+    circleDistance_x = abs(circle[0] - rect_pos[0])
+    circleDistance_y = abs(circle[1] - rect_pos[1])
+
+
+    if circleDistance_x > (rect_size[0]/2 + circle_radius):
+        return False
+    if circleDistance_y > (rect_size[1]/2 + circle_radius):
+        return False
+
+    if circleDistance_x <= rect_size[0]/2:
+        return True
+
+    if circleDistance_y <= (rect_size[1]/2):
+        return True
+
+    cornerDistance_sq = (circleDistance_x - rect_size[0]/2)**2 + (circleDistance_y - rect_size[1]/2)**2
+    return (cornerDistance_sq <= (circle_radius**2))
+
 
 
 def read_highscore():

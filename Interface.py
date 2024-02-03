@@ -50,3 +50,59 @@ class Button:
             self.color = "black"
             if pygame.mouse.get_pressed(num_buttons=3)[0]:
                 return True
+
+
+class InputBox:
+    def __init__(self, screen, pos: tuple, size: tuple[int, int], color=(0, 0, 0), font_color=(255, 255, 255),
+                 color_active=(255, 255, 255)):
+        self.font = pygame.font.SysFont("Calibri", 20)
+        self.font_color = font_color
+        self.color = color
+        self.color_active = color_active
+        self.size = size
+        self.x = pos[0]
+        self.y = pos[1]
+        self.field_rect = pygame.Rect((self.x, self.y), self.size)
+        self.field_rect.center = (self.x, self.y)
+        print(self.field_rect.center)
+        self.active = False
+        self.text = ""
+        self.txt_surface = self.font.render(self.text, True, self.color)
+        self.screen = screen
+
+    def handle_event(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                print(event)
+                if self.field_rect.collidepoint(event.pos):
+                    print("OK")
+                    self.active = True
+                else:
+                    self.active = False
+                self.color = self.color_active if self.active else self.color
+            if event.type == pygame.KEYDOWN:
+                print("YEAH")
+                self.update()
+                print(self.active)
+                if self.active:
+                    print("HOOOOO")
+                    if event.key == pygame.K_RETURN:
+                        text = self.text
+                        self.text = ""
+                        print(text)
+                        return text
+                    elif event.key == pygame.K_BACKSPACE:
+                        #self.text = self.text[:self.cursor_position] + self.text[self.cursor_position+1:]
+                        self.text = self.text[:-1]
+                    else:
+                        self.text += event.unicode
+                        print(self.text)
+                    self.txt_surface = self.font.render(self.text, True, self.font_color)
+
+    def update(self):
+        width = max(self.size[0], self.txt_surface.get_width() + 10)
+        self.field_rect.w = width
+
+    def draw(self, screen):#
+        pygame.draw.rect(screen, self.color, self.field_rect)
+        screen.blit(self.txt_surface, self.field_rect.center)

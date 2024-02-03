@@ -26,10 +26,9 @@ class Bullet2:
             (self.position.x + self.bulletSprite.get_width() / 2),
             (self.position.y + self.bulletSprite.get_height() / 2))
 
-        playerRect = player.playerSprite.get_rect()
-        playerHitbox = playerRect.inflate(-19, -5)
+        playerHitbox = player.hitbox
         playerHitbox.center = (
-            (player.position.x + player.playerSprite.get_width() / 2), (player.position.y + player.playerSprite.get_height() / 2))
+            (player.position.x + player.hitbox_width), (player.position.y + player.hitbox_height))
 
         collide = hitbox.colliderect(playerHitbox)
 

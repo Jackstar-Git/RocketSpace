@@ -3,6 +3,7 @@ from .Rock import Rock
 from .Enemy import Enemy
 
 from Constants import DISPLAY
+from utils.functions import collide_circle_rect
 
 class Bullet:
     def __init__(self, x_pos, y_pos, velocity):
@@ -20,7 +21,7 @@ class Bullet:
         self.position.y += self.velocity * (frame_delta_time * (-1))
         DISPLAY.blit(self.image_surface, self.position)
 
-    def rock_hit(self, rock: Rock):
+    def rock_hit(self, rock: Rock, Game_rocks: list):
         rock = rock
 
         rect = self.bulletSprite.get_rect()
@@ -32,15 +33,17 @@ class Bullet:
         rockRect = rock.rockSprite.get_rect()
         rockHitbox = rockRect.inflate(-4, -4)
         rockHitbox.center = (
-            (rock.position.x + rock.rockSprite.get_width() / 2), (rock.position.y + rock.rockSprite.get_height() / 2))
+            (rock.position.x + rock.hitbox_width), (rock.position.y + rock.hitbox_height))
 
         collide = hitbox.colliderect(rockHitbox)
 
         if collide and not self.has_hit:
             self.has_hit = True
-            print("Destroyed a rock")
             rock.was_hit = True
-    
+            for r in Game_rocks:
+                if not r.was_hit:
+                    r.was_hit = collide_circle_rect((self.position[0], self.position[1]), 800, r.position, r.hitbox.size)
+
     def enemy_hit(self, enemy: Enemy):
         enemy = enemy
 
@@ -59,7 +62,10 @@ class Bullet:
 
         if collide and not self.has_hit:
             self.has_hit = True
-            print("Destroyed an Enemy")
             enemy.was_hit = True
+
+
+
+
 
 
