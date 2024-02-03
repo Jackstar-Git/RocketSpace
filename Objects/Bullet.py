@@ -40,9 +40,10 @@ class Bullet:
         if collide and not self.has_hit:
             self.has_hit = True
             rock.was_hit = True
-            for r in Game_rocks:
-                if not r.was_hit:
-                    r.was_hit = collide_circle_rect((self.position[0], self.position[1]), 800, r.position, r.hitbox.size)
+
+            #for r in Game_rocks:
+             #   if not r.was_hit:
+              #      r.was_hit = collide_circle_rect((self.position[0], self.position[1]), 800, r.position, r.hitbox.size)
 
     def enemy_hit(self, enemy: Enemy):
         enemy = enemy
