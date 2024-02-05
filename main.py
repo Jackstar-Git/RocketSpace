@@ -15,20 +15,23 @@ from Game import Game
 from Interface import HealthInterface
 
 from utils.functions import new_highscore_end, debug_mode
-from utils.tasks import enemy_shoot_cycle
+from utils.tasks import enemy_shoot_cycle, initial_load
 import utils.screens as screens
 
 
 def play():
-    font = pygame.font.SysFont("Arial", 18)
+    screens.title_screen()
 
+    font = pygame.font.SysFont("Arial", 18)
     enemy_shoot_thread = threading.Thread(target=enemy_shoot_cycle, daemon=True)
     enemy_shoot_thread.start()
-
     Game.start_time = time.time()
     t_accumulator = 0
-    t_slice = 0.015
-    screens.title_screen()
+    t_slice = 0.03
+
+    initial_load_thread = threading.Thread(target=initial_load, daemon=True)
+    initial_load_thread.start()
+    initial_load_thread.join()
 
     while True:
         Game.frame_delta_time = (time.time() - Game.last_td)
@@ -36,10 +39,10 @@ def play():
         t_accumulator += Game.frame_delta_time
 
         sub_frame = Game.frame_delta_time
-        Game.speed_factor = Game.frame_delta_time * 360
 
         while sub_frame > 0.0:
             Game.frame_delta_time = min(t_slice, Game.frame_delta_time)
+            Game.speed_factor = Game.frame_delta_time * 360
             sub_frame -= Game.frame_delta_time
             t_accumulator -= Game.frame_delta_time
 

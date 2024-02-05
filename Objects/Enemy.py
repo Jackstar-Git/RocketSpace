@@ -1,8 +1,7 @@
 import pygame
 from .Bullet2 import Bullet2
 
-from Constants import DISPLAY
-
+from Constants import DISPLAY, Size
 
 class Enemy:
     def __init__(self, x_pos, y_pos, velocity, bullet_velocity):
@@ -19,9 +18,9 @@ class Enemy:
         self.image_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 16).convert_alpha()
         self.image_surface.blit(self.enemySprite, self.rect)
 
-
     def fly(self, frame_delta_time):
         self.position.y += self.velocity * frame_delta_time
+
         DISPLAY.blit(self.image_surface, self.position)
 
     def shoot(self):

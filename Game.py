@@ -28,6 +28,7 @@ class Game:
     frame_delta_time = 0
     start_time = time.time()
     speed_factor = 0
+    state = 1
 
     @classmethod
     def reset(cls):

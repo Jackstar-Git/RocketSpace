@@ -11,6 +11,7 @@
 ## Bug Fixes
 - Fixed bug that caused the background to become red when resizing the window (bug is not 100% fixed, but instead of red the background should turn black)
 - Character should now ignore inputs when the game is paused
+- Fixed bug that the player instantly dies if the game load with a low framerate.
 
 ## Additions
 - The difficulty increases the more point's you have. <br>

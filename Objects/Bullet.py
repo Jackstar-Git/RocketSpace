@@ -2,8 +2,7 @@ import pygame
 from .Rock import Rock
 from .Enemy import Enemy
 
-from Constants import DISPLAY
-from utils.functions import collide_circle_rect
+from Constants import DISPLAY, Size
 
 class Bullet:
     def __init__(self, x_pos, y_pos, velocity):
@@ -16,6 +15,7 @@ class Bullet:
         self.rect = self.bulletSprite.get_rect()
         self.image_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 16).convert_alpha()
         self.image_surface.blit(self.bulletSprite, self.rect)
+
 
     def fly(self, frame_delta_time):
         self.position.y += self.velocity * (frame_delta_time * (-1))

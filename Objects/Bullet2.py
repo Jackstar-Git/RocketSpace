@@ -1,6 +1,6 @@
 import pygame
 
-from Constants import DISPLAY
+from Constants import DISPLAY, Size
 
 class Bullet2:
     def __init__(self, x_pos, y_pos, velocity):
@@ -14,6 +14,7 @@ class Bullet2:
 
     def fly(self, frame_delta_time):
         self.position.y += self.velocity*frame_delta_time
+
         DISPLAY.blit(self.bulletSprite, self.position)
 
 

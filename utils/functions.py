@@ -12,7 +12,6 @@ def collide_circle_rect(circle: tuple[float, float], circle_radius: float, rect_
     circleDistance_x = abs(circle[0] - rect_pos[0])
     circleDistance_y = abs(circle[1] - rect_pos[1])
 
-
     if circleDistance_x > (rect_size[0]/2 + circle_radius):
         return False
     if circleDistance_y > (rect_size[1]/2 + circle_radius):
@@ -25,7 +24,7 @@ def collide_circle_rect(circle: tuple[float, float], circle_radius: float, rect_
         return True
 
     cornerDistance_sq = (circleDistance_x - rect_size[0]/2)**2 + (circleDistance_y - rect_size[1]/2)**2
-    return (cornerDistance_sq <= (circle_radius**2))
+    return cornerDistance_sq <= (circle_radius**2)
 
 
 
@@ -33,10 +32,10 @@ def read_highscore():
     with open("highscore.txt", "r") as file:
         return int(file.read())
 
+
 def new_highscore_end(highscore):
     with open("highscore.txt", "w") as file:
         file.write(str(highscore))
-
 
 
 def debug_mode(player, rocks, enemies, coins, friendly_bullets, display: pygame.display):

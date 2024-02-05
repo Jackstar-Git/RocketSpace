@@ -47,7 +47,7 @@ class Button:
 
     def get_click(self):
         mousePos = pygame.mouse.get_pos()
-        if self.button_rect.collidepoint(mousePos):
+        if self.button_rect.collidepoint(mousePos) and self.enabled:
             self.color = "black"
             if pygame.mouse.get_pressed(num_buttons=3)[0]:
                 return True

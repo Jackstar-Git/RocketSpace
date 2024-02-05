@@ -1,7 +1,6 @@
 import pygame
 
-from Constants import DISPLAY
-
+from Constants import DISPLAY, Size
 
 class Rock:
     def __init__(self, x_pos, y_pos, velocity):

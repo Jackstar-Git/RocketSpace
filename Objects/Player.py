@@ -1,4 +1,5 @@
 import pygame
+
 from .Rock import Rock
 from .Coin import Coin
 from .Bullet import Bullet
@@ -17,6 +18,7 @@ class Player:
 
         self.position = pygame.Vector2()
         self.position.xy = 200 - round(self.playerSprite.get_width() / 2), 650 - round(self.playerSprite.get_height() / 2)
+
         self.health = 3
         self.bullets = 10
 
@@ -25,9 +27,10 @@ class Player:
         self.hitbox.center = (
             (self.position.x + self.hitbox_width),
             (self.position.y + self.hitbox_width))
+
     def move(self):
         if self.position.x > Size.Width:
-            self.position.x = Size.Width-self.hitbox.size[0]*1.5
+            self.position.x = Size.Width - self.hitbox.size[0] * 1.5
 
         self.hitbox.center = (self.position.x + self.hitbox_width), (
                      self.position.y + self.hitbox_width)
