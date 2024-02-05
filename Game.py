@@ -26,11 +26,13 @@ class Game:
     paused = False
     last_td = time.time()
     frame_delta_time = 0
-    start_time = 0
+    start_time = time.time()
+    speed_factor = 0
 
     @classmethod
     def reset(cls):
         cls.BG = Background()
+        cls.BG.resize()
         cls.player = Player()
         cls.rocks: [Rock] = []
         cls.enemies: [Enemy] = []
@@ -45,7 +47,7 @@ class Game:
         cls.paused = False
         cls.last_td = time.time()
         cls.frame_delta_time = 0
-        cls.start_time = 0
+        cls.start_time = time.time()
 
 
 
@@ -65,26 +67,3 @@ class Game:
 
 
 
-
-    #@classmethod
-    #def save(cls):
-    #    with open("save.txt", "w") as file:
-    #        data = {
-    #            "BG": cls.BG,
-    #            "player": cls.player,
-    #            "rocks": cls.rocks,
-    #            "enemies": cls.enemies,
-    #            "coins": cls.coins,
-    #            "friendly_bullets": cls.friendly_bullets,
-    #            "enemy_bullets": cls.enemy_bullets,
-    #            "points": cls.points,
-    #            "highscore": cls.highscore,
-    #            "debug": cls.debug,
-    #            "enemy_shoot": cls.enemy_shoot,
-    #            "bullet_counter": cls.bullet_counter,
-    #            "paused": cls.paused,
-    #            "last_td": cls.last_td,
-    #            "frame_delta_time": cls.frame_delta_time}
-#
-    #        json.dump(data, file, indent=4)
-#

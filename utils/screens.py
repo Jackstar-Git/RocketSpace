@@ -2,10 +2,11 @@ import pygame
 import time
 import sys
 
-from Constants import *
+from Constants import Size, WHITE, DISPLAY, clock
 from Game import Game
 from Interface import Button
-from main import play
+
+
 def game_over_screen():
     font = pygame.font.SysFont("Arial", 21)
     font2 = pygame.font.SysFont("Arial", 28)
@@ -46,13 +47,15 @@ def game_over_screen():
         DISPLAY.blit(font_face_score, font_face_score_rect)
         DISPLAY.blit(font_face_time_spent, font_face_time_spent_rect)
 
-        play_again_button = Button(DISPLAY, (Size.Width/2, 350), "Play Again", (350, 50), (82, 77, 77), "white", (36, 35, 35))
-        back_to_title_screen = Button(DISPLAY, (Size.Width/2, 420), "Back to title screen", (350, 50), (82, 77, 77), "white", (36, 35, 35))
-        quit_button = Button(DISPLAY, (Size.Width/2, 490), "Quit", (350, 50), (82, 77, 77), "white", (36, 35, 35))
+        play_again_button = Button(DISPLAY, (Size.Width / 2, 350), "Play Again", (350, 50), (82, 77, 77), "white",
+                                   (36, 35, 35))
+        back_to_title_screen = Button(DISPLAY, (Size.Width / 2, 420), "Back to title screen", (350, 50), (82, 77, 77),
+                                      "white", (36, 35, 35))
+        quit_button = Button(DISPLAY, (Size.Width / 2, 490), "Quit", (350, 50), (82, 77, 77), "white", (36, 35, 35))
 
         if play_again_button.get_click():
             Game.reset()
-            play()
+            break
         if back_to_title_screen.get_click():
             title_screen()
         if quit_button.get_click():
@@ -63,10 +66,10 @@ def game_over_screen():
 
         clock.tick(60)
 
+
 def title_screen():
     pygame.display.set_caption("RocketSpace")
 
-    font = pygame.font.SysFont("Arial", 18)
     font2 = pygame.font.SysFont("Comic Sans MS", 25)
     DISPLAY.fill("black")
 
@@ -81,18 +84,22 @@ def title_screen():
             if event.type == pygame.VIDEORESIZE:
                 Size.Width = event.w
                 Size.Height = event.h
-                Game.BG.image = pygame.transform.scale(Game.BG.image, (Size.Width, Size.Height))
+                Game.BG.resize()
+                Game.BG.adjust_backup_height()
 
-        font_face_paused = font2.render(f"RocketSpace", False, WHITE)
-        font_face_paused_rect = font_face_paused.get_rect(midtop=(Size.Width / 2, 50))
-        DISPLAY.blit(font_face_paused, font_face_paused_rect)
+        font_face_title = font2.render(f"RocketSpace", False, WHITE)
+        font_face_title_rect = font_face_title.get_rect(midtop=(Size.Width / 2, 50))
+        DISPLAY.blit(font_face_title, font_face_title_rect)
 
-        play_button = Button(DISPLAY, (Size.Width/2, 350), "Play", (350, 50), (82, 77, 77), "white", (36, 35, 35))
-        options_button = Button(DISPLAY, (Size.Width/2, 420), "Options", (350, 50), (82, 77, 77), "white", (36, 35, 35))
-        quit_button = Button(DISPLAY, (Size.Width/2, 490), "Quit", (350, 50), (82, 77, 77), "white", (36, 35, 35))
+        play_button = Button(DISPLAY, (Size.Width / 2, 350), "Play", (350, 50), (82, 77, 77), "white", (36, 35, 35))
+        options_button = Button(DISPLAY, (Size.Width / 2, 420), "Options", (350, 50), (82, 77, 77), "white",
+                                (36, 35, 35))
+        quit_button = Button(DISPLAY, (Size.Width / 2, 490), "Quit", (350, 50), (82, 77, 77), "white", (36, 35, 35))
 
         if play_button.get_click():
-            play()
+            break
+        if options_button.get_click():
+            options_screen()
         if quit_button.get_click():
             pygame.quit()
             sys.exit()
@@ -104,9 +111,11 @@ def title_screen():
 
 def options_screen():
     pygame.display.update()
+    font2 = pygame.font.SysFont("Comic Sans MS", 35)
 
     while True:
-        Game.frame_delta_time = (time.time() - Game.last_td) * 360
+        DISPLAY.fill("black")
+        Game.frame_delta_time = (time.time() - Game.last_td)
         Game.last_td = time.time()
 
         for event in pygame.event.get():
@@ -117,8 +126,14 @@ def options_screen():
                 Size.Width = event.w
                 Size.Height = event.h
 
+        font_face_title = font2.render(f"Options", False, WHITE)
+        font_face_title_rect = font_face_title.get_rect(midtop=(Size.Width / 2, 50))
+
+        DISPLAY.blit(font_face_title, font_face_title_rect)
+        back_button = Button(DISPLAY, (Size.Width / 2, Size.Height - 100), "Back", (350, 50), (82, 77, 77), "white", (36, 35, 35))
+
+        if back_button.get_click():
+            title_screen()
         pygame.display.update()
 
         clock.tick(60)
-
-

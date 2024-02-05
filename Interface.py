@@ -2,6 +2,7 @@ import pygame
 from Constants import DISPLAY, Size
 from Game import Game
 
+
 class HealthInterface:
     healthSprite = pygame.image.load("assets/images/heart.png").convert_alpha()
     healthSprite = pygame.transform.scale(healthSprite, (35, 35))
@@ -64,7 +65,6 @@ class InputBox:
         self.y = pos[1]
         self.field_rect = pygame.Rect((self.x, self.y), self.size)
         self.field_rect.center = (self.x, self.y)
-        print(self.field_rect.center)
         self.active = False
         self.text = ""
         self.txt_surface = self.font.render(self.text, True, self.color)

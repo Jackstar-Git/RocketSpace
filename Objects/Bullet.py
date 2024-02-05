@@ -14,7 +14,7 @@ class Bullet:
         self.velocity = velocity
         self.has_hit = False
         self.rect = self.bulletSprite.get_rect()
-        self.image_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 32).convert_alpha()
+        self.image_surface = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA, 16).convert_alpha()
         self.image_surface.blit(self.bulletSprite, self.rect)
 
     def fly(self, frame_delta_time):

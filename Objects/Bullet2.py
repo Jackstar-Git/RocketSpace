@@ -5,7 +5,7 @@ from Constants import DISPLAY
 class Bullet2:
     def __init__(self, x_pos, y_pos, velocity):
         self.bulletSprite = pygame.image.load("assets/images/bullet.png").convert_alpha()
-        self.bulletSprite = pygame.transform.flip(self.bulletSprite, 0 ,1)
+        self.bulletSprite = pygame.transform.flip(self.bulletSprite, False ,True)
         self.bulletSprite = pygame.transform.scale(self.bulletSprite, (20, 20))
         self.position = pygame.Vector2()
         self.position.xy = x_pos, y_pos
@@ -34,5 +34,4 @@ class Bullet2:
 
         if collide and not self.has_hit:
             self.has_hit = True
-            print("Hit a player")
             player.health -= 1

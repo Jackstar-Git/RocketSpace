@@ -25,7 +25,6 @@ class Player:
         self.hitbox.center = (
             (self.position.x + self.hitbox_width),
             (self.position.y + self.hitbox_width))
-        print(self.hitbox.size)
     def move(self):
         if self.position.x > Size.Width:
             self.position.x = Size.Width-self.hitbox.size[0]*1.5
@@ -51,13 +50,13 @@ class Player:
 
         blocked = [True, True, True, True]
 
-        if (self.hitbox.center[0] - width/2) <= 0:
+        if self.hitbox.left <= 0:
             blocked[0] = False
-        if (self.hitbox.center[0] + width/2) >= Size.Width:
+        if self.hitbox.right >= Size.Width:
             blocked[1] = False
-        if (self.hitbox.center[1] - height/2) <= 0:
+        if self.hitbox.top <= 0:
             blocked[2] = False
-        if (self.hitbox.center[1] + height/2) >= Size.Height:
+        if self.hitbox.bottom >= Size.Height:
             blocked[3] = False
 
         return blocked

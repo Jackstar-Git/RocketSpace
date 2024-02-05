@@ -79,3 +79,4 @@ def debug_mode(player, rocks, enemies, coins, friendly_bullets, display: pygame.
             (friendly_bullet.position.y + friendly_bullet.bulletSprite.get_height() / 2))
 
         pygame.draw.rect(display, (220, 15, 255), bulletHitbox)
+

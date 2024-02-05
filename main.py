@@ -7,15 +7,15 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
 os.chdir(f"{os.path.dirname(__file__)}")
 
-import pygame.time
-from Objects import Coin, Enemy, Rock
+import pygame
 
-from Constants import *
+from Objects import Coin, Enemy, Rock
+from Constants import Size, DISPLAY, WHITE, clock
 from Game import Game
 from Interface import HealthInterface
-from utils.functions import *
-from utils.tasks import enemy_shoot_cycle
 
+from utils.functions import new_highscore_end, debug_mode
+from utils.tasks import enemy_shoot_cycle
 import utils.screens as screens
 
 
@@ -24,22 +24,24 @@ def play():
 
     enemy_shoot_thread = threading.Thread(target=enemy_shoot_cycle, daemon=True)
     enemy_shoot_thread.start()
+
     Game.start_time = time.time()
     t_accumulator = 0
-    t_slice = 0.01
+    t_slice = 0.015
+    screens.title_screen()
 
     while True:
-        Game.frame_delta_time = (time.time() - Game.last_td) * 360
+        Game.frame_delta_time = (time.time() - Game.last_td)
         Game.last_td = time.time()
-        t_accumulator += Game.frame_delta_time / 360
+        t_accumulator += Game.frame_delta_time
 
-        sub_frame = Game.frame_delta_time / 360
+        sub_frame = Game.frame_delta_time
+        Game.speed_factor = Game.frame_delta_time * 360
 
         while sub_frame > 0.0:
-            Game.frame_delta_time = min(t_slice * 360, Game.frame_delta_time)
-            print(Game.frame_delta_time)
-            sub_frame -= Game.frame_delta_time / 360
-            t_accumulator -= Game.frame_delta_time / 360
+            Game.frame_delta_time = min(t_slice, Game.frame_delta_time)
+            sub_frame -= Game.frame_delta_time
+            t_accumulator -= Game.frame_delta_time
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -48,7 +50,7 @@ def play():
                 if event.type == pygame.VIDEORESIZE:
                     Size.Width = event.w
                     Size.Height = event.h
-                    Game.BG.image = pygame.transform.scale(Game.BG.image, (Size.Width, Size.Height + 150))
+                    Game.BG.resize()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE and Game.player.bullets >= 1:
                         Game.friendly_bullets.append(Game.player.shoot())
@@ -62,20 +64,6 @@ def play():
                             Game.paused = True
                         else:
                             Game.paused = False
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_w:
-                        Game.player.boosted = False
-
-            keys = pygame.key.get_pressed()
-            if (keys[pygame.K_a]) and Game.player.check_boarder_collision()[0]:
-                Game.player.position.x += -1 * Game.frame_delta_time
-            if keys[pygame.K_s] and Game.player.check_boarder_collision()[3]:
-                Game.player.position.y += 1 * Game.frame_delta_time
-            if keys[pygame.K_d] and Game.player.check_boarder_collision()[1]:
-                Game.player.position.x += 1 * Game.frame_delta_time
-            if keys[pygame.K_w] and Game.player.check_boarder_collision()[2]:
-                Game.player.position.y += -1 * Game.frame_delta_time
-
             if Game.paused:
                 font_face_paused = font.render(f"PAUSED", False, WHITE)
 
@@ -83,12 +71,17 @@ def play():
                 pygame.display.update()
                 continue
 
-            # for r in Game.rocks:
-            #    rock_hitbox = (r.position.x + r.rockSprite.get_width() / 2), (r.position.y + r.rockSprite.get_height() / 2)
-            #    if collide_circles(Game.player.hitbox.center, rock_hitbox, 55, 30):
-            #        print("Collison")
+            keys = pygame.key.get_pressed()
+            if (keys[pygame.K_a]) and Game.player.check_boarder_collision()[0]:
+                Game.player.position.x += -1 * Game.speed_factor
+            if keys[pygame.K_s] and Game.player.check_boarder_collision()[3]:
+                Game.player.position.y += 1 * Game.speed_factor
+            if keys[pygame.K_d] and Game.player.check_boarder_collision()[1]:
+                Game.player.position.x += 1 * Game.speed_factor
+            if keys[pygame.K_w] and Game.player.check_boarder_collision()[2]:
+                Game.player.position.y += -1 * Game.speed_factor
 
-            DISPLAY.fill("red")
+            DISPLAY.fill("black")
             Game.BG.scroll()
             font_face_highscore = font.render(f"Highscore: {Game.highscore}", True, WHITE)
             font_face_score = font.render(f"Score: {Game.points}", True, WHITE)
@@ -96,6 +89,8 @@ def play():
             font_face_fps = font.render(f"FPS: {round(clock.get_fps())}", True, WHITE)
 
             Game.player.move()
+            difficulty_factor = (1+(Game.points/150))
+
             # ---------------------- Coins ----------------------
             for coin in list(Game.coins):
                 if (coin.position.y > Size.Height) or (coin.position.y < 0) or coin.was_collected:
@@ -104,7 +99,7 @@ def play():
                     if Game.player.coin_collide(coin):
                         Game.player.bullets += 1
                         Game.points += 1
-                    coin.fall(Game.frame_delta_time)
+                    coin.fall(Game.speed_factor)
 
             while len(Game.coins) < round(Size.Width / 150):
                 x_pos = random.randint(0, Size.Width)
@@ -118,9 +113,9 @@ def play():
                     Game.rocks.remove(rock)
                 else:
                     Game.player.rock_collision(rock)
-                    rock.fall(Game.frame_delta_time)
+                    rock.fall(Game.speed_factor)
 
-            while len(Game.rocks) < round(Size.Width / 30):
+            while len(Game.rocks) < round((Size.Width / 30)*difficulty_factor):
                 x_pos = random.randint(0, Size.Width)
                 y_pos = random.randint(0, 25)
                 velocity = abs((random.random() + 0.1) / 2.75)
@@ -132,16 +127,16 @@ def play():
                     Game.enemy_bullets.remove(enemy_bullet)
                 else:
                     enemy_bullet.player_hit(Game.player)
-                    enemy_bullet.fly(Game.frame_delta_time)
+                    enemy_bullet.fly(Game.speed_factor)
 
             for enemy in list(Game.enemies):
                 if enemy.position.y > Size.Height or enemy.was_hit or enemy.has_hit:
                     Game.enemies.remove(enemy)
                 else:
                     Game.player.enemy_collision(enemy)
-                    enemy.fly(Game.frame_delta_time)
+                    enemy.fly(Game.speed_factor)
 
-            while len(Game.enemies) < round(Size.Width / 150):
+            while len(Game.enemies) < round((Size.Width / 150)*difficulty_factor):
                 x_pos = random.randint(0, Size.Width)
                 y_pos = random.randint(0, 25)
                 velocity = abs((random.random() + 0.2) / 2.3)
@@ -159,7 +154,7 @@ def play():
                     for enemy in Game.enemies:
                         friendly_bullet.enemy_hit(enemy)
 
-                    friendly_bullet.fly(Game.frame_delta_time)
+                    friendly_bullet.fly(Game.speed_factor)
 
             DISPLAY.blit(font_face_highscore, (20, 20))
             DISPLAY.blit(font_face_score, (20, 40))
@@ -179,11 +174,9 @@ def play():
                 debug_mode(Game.player, Game.rocks, Game.enemies, Game.coins, Game.friendly_bullets, DISPLAY)
 
         pygame.display.update()
-
         clock.tick(0)
 
 
 if __name__ == '__main__':
     pygame.init()
-    screens.title_screen()
-
+    play()
